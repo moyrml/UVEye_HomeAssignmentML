@@ -5,6 +5,7 @@ from multiprocessing import Pool
 from functools import partial
 import plotly_express as px
 import plotly.graph_objs as go
+import cv2
 
 
 def gather_images(data_dir):
@@ -20,10 +21,14 @@ def gather_images(data_dir):
 
 
 def get_single_image_size_and_set(image_path, set_location):
-    image = Image.open(image_path)
-    width, height = image.size
+    image = cv2.imread(str(image_path))
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    channel_mean = [image[c].mean() for c in range(image.shape[2])]
+    width, height, _ = image.shape
+
     image_set = image_path.parts[set_location]
-    return image_set, width, height
+    return image_set, width, height, *channel_mean
 
 
 def get_image_data(images, set_location=2):
@@ -35,9 +40,12 @@ def get_image_data(images, set_location=2):
     :return: `pandas.DataFrame`.
     """
     part = partial(get_single_image_size_and_set, set_location=set_location)
-    with Pool(1) as pool:
+    with Pool() as pool:
         size_set = pool.map(part, images)
-    size_set = pd.DataFrame(size_set, columns=['set', 'width', 'height'])
+    size_set = pd.DataFrame(
+        size_set,
+        columns=['set', 'width', 'height', 'R mean', 'G mean', 'B mean']
+    )
 
     return size_set
 
