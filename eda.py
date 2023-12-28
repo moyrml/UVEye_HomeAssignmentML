@@ -28,7 +28,7 @@ def get_single_image_size_and_set(image_path, set_location):
     width, height, _ = image.shape
 
     image_set = image_path.parts[set_location]
-    return image_set, width, height, *channel_mean
+    return image_set, image_path.stem, image_path, width, height, *channel_mean
 
 
 def get_image_data(images, set_location=2):
@@ -44,7 +44,7 @@ def get_image_data(images, set_location=2):
         size_set = pool.map(part, images)
     size_set = pd.DataFrame(
         size_set,
-        columns=['set', 'width', 'height', 'R mean', 'G mean', 'B mean']
+        columns=['set', 'image name', 'image path', 'width', 'height', 'R mean', 'G mean', 'B mean']
     )
 
     return size_set
