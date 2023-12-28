@@ -36,13 +36,13 @@ class ImageDataset(Dataset):
         image_names = [p.stem for p in images]
         background_color = [np.nan] * len(images)
         label = [np.nan] * len(images)
-        label_encoder = None
 
         if dataset_name not in ['train', 'test']:
             raise ValueError(f"Incorrect dataset name: {dataset_name}")
 
         if dataset_name == 'train':
             background_color = [p.parts[path_background_loc] for p in images]
+            label_encoder = LabelEncoder(['black', 'white'])
         else:
             label = [p.parts[path_label_loc] for p in images]
             label_encoder = LabelEncoder(set(label))
@@ -70,8 +70,10 @@ class ImageDataset(Dataset):
 
         if self.dataset_name == 'test':
             label = self.label_encoder.encode(row.label)
-            return image, label
-        return image
+        else:
+            label = self.label_encoder.encode(row['background color'])
+
+        return image, label
 
 
 if __name__ == '__main__':
@@ -82,7 +84,7 @@ if __name__ == '__main__':
         scale_images_to=500
     )
 
-    image = image_loader[0]
+    image, background_color = image_loader[0]
 
     image_test_loader = ImageDataset(
         '../data/categories_dataset',
