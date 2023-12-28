@@ -78,6 +78,30 @@ def plot_width_height_scatter(image_data_df, output_path=None):
     return combined
 
 
+def plot_channel_means(image_data_df, background_color_loc=3, output_path=None):
+    image_data_df['background color'] = image_data_df['image path'].apply(lambda x: Path(x).parts[background_color_loc])
+    image_data_df.sort_values(['background color', 'set'], inplace=True)
+
+    names = image_data_df.apply(lambda x: f"{x['image name']} - {x['set']} ({x['background color']})", axis='columns').tolist()
+
+    fig = go.Figure()
+    fig.add_traces([
+        go.Scatter(y=image_data_df['R mean'], x=names, mode='markers', marker_color='red', name='R', showlegend=True),
+        go.Scatter(y=image_data_df['G mean'], x=names, mode='markers', marker_color='green', name='G', showlegend=True),
+        go.Scatter(y=image_data_df['B mean'], x=names, mode='markers', marker_color='blue', name='B', showlegend=True),
+    ])
+
+    black_names = [n for n in names if n.endswith('(black)')]
+    fig.add_vrect(
+        x0=black_names[0], x1=black_names[-1], fillcolor="gray", opacity=0.25,
+        annotation_text="black background", annotation_position="top left"
+    )
+    fig.layout.title = 'Channel distribution per data point'
+
+    if output_path is not None:
+        fig.write_html(output_path / 'channel_distribution.html')
+
+
 if __name__ == '__main__':
     data_dir = 'data/black_white_dataset'
     output_path = 'outputs/eda/'
@@ -87,4 +111,5 @@ if __name__ == '__main__':
     images = gather_images(data_dir)
 
     image_data_df = get_image_data(images)
+    plot_channel_means(image_data_df, output_path=output_path)
     plot_width_height_scatter(image_data_df, output_path=output_path)
