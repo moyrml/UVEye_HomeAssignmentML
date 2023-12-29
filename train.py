@@ -16,8 +16,9 @@ def train_ae_one_epoch(model, device, dataloader, optimizer, loss_func):
     epoch_loss = 0
 
     for batch_i, (images, background_colors) in enumerate(dataloader):
+        images = images.to(device)
         optimizer.zero_grad()
-        recon = model(images.to(device))
+        recon = model(images)
         loss = loss_func(recon, images)
         loss.backward()
         optimizer.step()
