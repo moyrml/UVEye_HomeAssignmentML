@@ -49,6 +49,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--wd', type=float, default=0)
     parser.add_argument('--bs', type=int, default=1)
+    parser.add_argument('--gpu_num', type=int, default=0)
     parser.add_argument('--loss_reduction', default='mean')
     parser.add_argument('--output_dir', default='outputs/models')
     parser.add_argument('--data_location', default='data/black_white_dataset')
