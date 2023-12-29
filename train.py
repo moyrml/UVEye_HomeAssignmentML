@@ -9,6 +9,7 @@ from torch import nn
 from utils.model import AE
 from utils.dataset import ImageDataset
 from utils.time_as_string import get_current_time_as_string
+from utils.plot_utils import plot_loss
 
 
 def train_ae_one_epoch(model, device, dataloader, optimizer, loss_func):
@@ -39,6 +40,9 @@ def train_ae(model, device, train_dataloader, epochs, optimizer, loss_func, outp
 
         if epoch > 0 and train_losses[-1] < min(train_losses[:-1]):
             torch.save(model.state_dict(), output_dir / 'ae_model.pth')
+
+    loss_plot = plot_loss(train_losses)
+    loss_plot.write_html(output_dir / 'loss_plot.html')
 
 
 if __name__ == '__main__':
