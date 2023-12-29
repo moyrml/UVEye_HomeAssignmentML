@@ -37,7 +37,7 @@ def train_ae(model, device, train_dataloader, epochs, optimizer, loss_func, outp
         train_losses.append(train_ae_one_epoch(model, device, train_dataloader, optimizer, loss_func))
         counter_obj.set_postfix_str(f'loss: {train_losses[-1]:0.3f}')
 
-        if train_losses[-1] < min(train_losses[:-1]):
+        if epoch > 0 and train_losses[-1] < min(train_losses[:-1]):
             torch.save(model.state_dict(), output_dir / 'ae_model.pth')
 
 
