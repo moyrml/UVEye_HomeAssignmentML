@@ -64,6 +64,7 @@ if __name__ == '__main__':
 
     output_dir = Path(args.output_dir) / get_current_time_as_string()
     output_dir.mkdir(exist_ok=True, parents=True)
+    print(f'Saving output to {output_dir}')
 
     device = f'cuda:{args.gpu_num}' if torch.cuda.is_available() else 'cpu'
     print(f'Using device {device}')
