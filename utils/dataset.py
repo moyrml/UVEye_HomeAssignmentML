@@ -4,8 +4,8 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 
-from load_image import load_image
-from label_encoder import LabelEncoder
+from utils.load_image import load_image
+from utils.label_encoder import LabelEncoder
 
 
 class ImageDataset(Dataset):
@@ -15,7 +15,8 @@ class ImageDataset(Dataset):
             path_background_loc=None,
             path_label_loc=None,
             scale_images_to=None,
-            dataset_name='train'
+            dataset_name='train',
+            normalize=False
     ):
         """
         Dataset object.
@@ -57,6 +58,7 @@ class ImageDataset(Dataset):
         self.dataset_name = dataset_name
         self.scale_images_to = scale_images_to
         self.label_encoder = label_encoder
+        self.normalize = normalize
 
     def __len__(self):
         return self.df.shape[0]
@@ -67,6 +69,14 @@ class ImageDataset(Dataset):
         image = load_image(row['image path'], self.scale_images_to)
         image = torch.Tensor(image)
         image = image.permute([2, 1, 0])
+
+        if self.normalize:
+            # Normalize to [-1,1]
+            image -= image.min()
+            image /= image.max()
+
+            image *= 2
+            image -= 1
 
         if self.dataset_name == 'test':
             label = self.label_encoder.encode(row.label)
