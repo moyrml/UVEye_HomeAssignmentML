@@ -98,6 +98,8 @@ if __name__ == '__main__':
         input_dim=args.image_scale
     )).to(device)
 
+    model.describe()
+
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
     loss_func = nn.MSELoss(reduction=args.loss_reduction)
     train_ae(model, device, train_dataloader, args.epochs, optimizer, loss_func, output_dir)
