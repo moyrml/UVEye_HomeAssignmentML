@@ -128,6 +128,10 @@ class AE(nn.Module):
         x = self.decoder(x)
         return x
 
+    def describe(self):
+        self.encoder.describe()
+        self.decoder.describe()
+
 
 if __name__ == '__main__':
     input_dim = 256
