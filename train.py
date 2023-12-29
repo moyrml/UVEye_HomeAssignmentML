@@ -51,6 +51,7 @@ if __name__ == '__main__':
     parser.add_argument('--bs', type=int, default=1)
     parser.add_argument('--loss_reduction', default='mean')
     parser.add_argument('--output_dir', default='outputs/models')
+    parser.add_argument('--data_location', default='data/black_white_dataset')
 
     parser.add_argument('--ae_depth', type=int, default=6)
     parser.add_argument('--ae_expand_factor', type=int, default=2)
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     device = f'cuda:{args.gpu_num}' if torch.cuda.is_available() else 'cpu'
 
     train_dataset = ImageDataset(
-        'data/black_white_dataset',
+        args.data_location,
         path_background_loc=3,
         dataset_name='train',
         scale_images_to=args.image_scale,
