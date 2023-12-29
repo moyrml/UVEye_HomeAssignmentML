@@ -55,14 +55,13 @@ class Encoder(nn.Module):
             x = m(x)
         return x
 
-    def __repr__(self):
+    def describe(self):
         print(f"{'Encoder Summary':-^90}")
         summary(
             self,
             input_size=(self.input_channels, self.input_dim, self.input_dim),
             batch_size=-1
         )
-        return ''
 
 
 class Decoder(nn.Module):
@@ -109,7 +108,7 @@ class Decoder(nn.Module):
             x = m(x)
         return x
 
-    def __repr__(self):
+    def describe(self):
         print(f"{'Decoder Summary':-^90}")
         summary(
             self,
@@ -124,10 +123,10 @@ if __name__ == '__main__':
     input_dim = 256
     latent_dim = 16
     encoder = Encoder(6, expand_factor=2, input_dim=input_dim, latent_dim=latent_dim)
-    print(encoder)
+    encoder.describe()
 
     decoder = Decoder(encoder)
-    print(decoder)
+    decoder.describe()
 
     inp = torch.randn((2, 3, input_dim, input_dim))
     latent = encoder(inp)
