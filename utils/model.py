@@ -116,7 +116,17 @@ class Decoder(nn.Module):
             batch_size=-1
         )
 
-        return ''
+
+class AE(nn.Module):
+    def __init__(self, encoder_params):
+        super().__init__()
+        self.encoder = Encoder(**encoder_params)
+        self.decoder = Decoder(self.encoder)
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
 
 
 if __name__ == '__main__':
