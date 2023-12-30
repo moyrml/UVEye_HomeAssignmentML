@@ -17,7 +17,8 @@ class ImageDataset(Dataset):
             set_loc=2,
             scale_images_to=None,
             dataset_name='train',
-            normalize=False
+            normalize=False,
+            return_filename=False
     ):
         """
         Dataset object.
@@ -66,6 +67,7 @@ class ImageDataset(Dataset):
         self.label_encoder = label_encoder
         self.normalize = normalize
         self.set_loc = set_loc
+        self.return_filename = return_filename
 
     def __len__(self):
         return self.df.shape[0]
@@ -89,6 +91,9 @@ class ImageDataset(Dataset):
             label = self.label_encoder.encode(row.label)
         else:
             label = self.label_encoder.encode(row['background color'])
+
+        if self.return_filename:
+            return image, label, row['image name']
 
         return image, label
 
