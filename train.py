@@ -121,7 +121,7 @@ if __name__ == '__main__':
     reduce_lr = None
     if args.reduce_lr:
         reduce_lr = ReduceLROnPlateau(
-            optimizer=optimizer, patience=args.reduce_lr_patience, factor=args.reduce_lr_factor
+            optimizer=optimizer, patience=args.reduce_lr_patience, factor=args.reduce_lr_factor, verbose=True
         )
     loss_func = nn.MSELoss(reduction=args.loss_reduction)
     train_ae(model, device, train_dataloader, args.epochs, optimizer, loss_func, output_dir, reduce_lr=reduce_lr)
