@@ -44,7 +44,7 @@ def train_ae(model, device, train_dataloader, epochs, optimizer, loss_func, outp
             torch.save(model.state_dict(), output_dir / 'ae_model.pth')
 
         if reduce_lr is not None:
-            reduce_lr.stem(train_losses[-1])
+            reduce_lr.step(train_losses[-1])
 
     loss_plot = plot_loss(train_losses)
     loss_plot.write_html(output_dir / 'loss_plot.html')
