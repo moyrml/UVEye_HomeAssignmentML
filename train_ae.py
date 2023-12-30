@@ -12,6 +12,7 @@ from utils.model import AE
 from utils.dataset import ImageDataset
 from utils.time_as_string import get_current_time_as_string
 from utils.plot_utils import plot_loss
+from utils.activation_func_mapping import get_activation_func_from_name
 
 
 def train_ae_one_epoch(model, device, dataloader, optimizer, loss_func):
@@ -103,18 +104,11 @@ if __name__ == '__main__':
         batch_size=args.bs
     )
 
-    activation_functions = dict(
-        ReLU=nn.ReLU,
-        PReLU=nn.PReLU,
-        GELU=nn.GELU,
-        GLU=nn.GLU
-    )
-
     model = AE(dict(
         depth=args.ae_depth,
         expand_factor=args.ae_expand_factor,
         latent_dim=args.ae_latent_dim,
-        activation_func=activation_functions[args.ae_activation_func],
+        activation_func=get_activation_func_from_name(args.ae_activation_func),
         input_dim=args.image_scale
     )).to(device)
 
