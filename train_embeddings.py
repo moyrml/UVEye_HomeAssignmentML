@@ -48,13 +48,10 @@ if __name__ == '__main__':
 
     master_dir = Path(args.master_dir)
 
+    embeddings_file = args.embeddings_file
     if args.embeddings_file is None:
         embeddings_file = master_dir / 'latent_vectors' / 'names_labels_embeddings.pkl'
-    else:
-        embeddings_file = args.embeddings_file
-
-    if not embeddings_file.exists():
-        raise FileExistsError(f'Cannot find latent representations of images. Location given: {embeddings_file}')
+    assert embeddings_file.exists(), f'Cannot find latent representations of images. Location given: {embeddings_file}'
 
     with open(embeddings_file, 'rb') as f:
         contents = pkl.load(f)
