@@ -14,6 +14,7 @@ class ImageDataset(Dataset):
             data_master_dir,
             path_background_loc=None,
             path_label_loc=None,
+            set_loc=2,
             scale_images_to=None,
             dataset_name='train',
             normalize=False
@@ -28,6 +29,7 @@ class ImageDataset(Dataset):
             train time, hence should be None for testing time.
         :param path_label_loc: int or None. Location in path denoting the label location. Relevant only for testing
             time, hence should be None for training time.
+        :param int set_loc: Location of set (train | test) indicator in path.
         :param int scale_images_to: Size target for images. Leave None for no scaling, but for batching purposes the
             images should be of equal sizes. EDA tells of square images so the resize is to size
             (scale_images_to,scale_images_to).
@@ -35,6 +37,7 @@ class ImageDataset(Dataset):
         """
         images = list(Path(data_master_dir).rglob('*.png'))
         image_names = [p.stem for p in images]
+        image_set = [p.parts[set_loc] for p in images]
         background_color = [np.nan] * len(images)
         label = [np.nan] * len(images)
 
@@ -50,15 +53,18 @@ class ImageDataset(Dataset):
 
         images = [str(p) for p in images]
         df = pd.DataFrame(
-            [image_names, images, background_color, label],
-            index=['image name', 'image path', 'background color', 'label']
+            [image_set, image_names, images, background_color, label],
+            index=['set', 'image name', 'image path', 'background color', 'label']
         ).T
+
+        df = df.loc[df.set == dataset_name]
 
         self.df = df
         self.dataset_name = dataset_name
         self.scale_images_to = scale_images_to
         self.label_encoder = label_encoder
         self.normalize = normalize
+        self.set_loc = set_loc
 
     def __len__(self):
         return self.df.shape[0]
