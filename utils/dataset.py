@@ -74,7 +74,7 @@ class ImageDataset(Dataset):
 
         image = load_image(row['image path'], self.scale_images_to)
         image = torch.Tensor(image)
-        image = image.permute([1, 2, 0])
+        image = image.permute([2, 0, 1])
 
         if self.normalize:
             # Normalize to [-1,1]
