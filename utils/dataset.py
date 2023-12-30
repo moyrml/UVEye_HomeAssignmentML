@@ -58,6 +58,7 @@ class ImageDataset(Dataset):
         ).T
 
         df = df.loc[df.set == dataset_name]
+        df.reset_index(inplace=True)
 
         self.df = df
         self.dataset_name = dataset_name
