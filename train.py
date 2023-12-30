@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 
 import torch.optim
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 from torch import nn
 
@@ -31,7 +32,7 @@ def train_ae_one_epoch(model, device, dataloader, optimizer, loss_func):
     return epoch_loss
 
 
-def train_ae(model, device, train_dataloader, epochs, optimizer, loss_func, output_dir):
+def train_ae(model, device, train_dataloader, epochs, optimizer, loss_func, output_dir, reduce_lr=None):
     train_losses = []
 
     counter_obj = tqdm(list(range(epochs)))
@@ -41,6 +42,9 @@ def train_ae(model, device, train_dataloader, epochs, optimizer, loss_func, outp
 
         if epoch > 0 and train_losses[-1] < min(train_losses[:-1]):
             torch.save(model.state_dict(), output_dir / 'ae_model.pth')
+
+        if reduce_lr is not None:
+            reduce_lr.stem(train_losses[-1])
 
     loss_plot = plot_loss(train_losses)
     loss_plot.write_html(output_dir / 'loss_plot.html')
@@ -60,6 +64,10 @@ if __name__ == '__main__':
     parser.add_argument('--output_dir', default='outputs/models')
     parser.add_argument('--data_location', default='data/black_white_dataset')
     parser.add_argument('--data_background_loc', type=int, default=4)
+
+    parser.add_argument('--reduce_lr', action='store_true')
+    parser.add_argument('--reduce_lr_patience', type=int, default=3)
+    parser.add_argument('--reduce_lr_factor', type=float, default=0.1)
 
     parser.add_argument('--ae_depth', type=int, default=6)
     parser.add_argument('--ae_expand_factor', type=int, default=2)
@@ -110,5 +118,10 @@ if __name__ == '__main__':
     model.describe()
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.wd)
+    reduce_lr = None
+    if args.reduce_lr:
+        reduce_lr = ReduceLROnPlateau(
+            optimizer=optimizer, patience=args.reduce_lr_patience, factor=args.reduce_lr_factor
+        )
     loss_func = nn.MSELoss(reduction=args.loss_reduction)
-    train_ae(model, device, train_dataloader, args.epochs, optimizer, loss_func, output_dir)
+    train_ae(model, device, train_dataloader, args.epochs, optimizer, loss_func, output_dir, reduce_lr=reduce_lr)
