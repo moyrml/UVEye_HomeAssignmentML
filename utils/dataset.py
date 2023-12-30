@@ -91,6 +91,9 @@ class ImageDataset(Dataset):
 
         return image, label
 
+    def describe(self):
+        print(f'Loaded {self.dataset_name} dataset with {len(self)} samples')
+
 
 if __name__ == '__main__':
     image_loader = ImageDataset(

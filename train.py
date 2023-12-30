@@ -94,6 +94,7 @@ if __name__ == '__main__':
         normalize=True,
         set_loc=args.data_set_loc
     )
+    train_dataset.describe()
 
     train_dataloader = DataLoader(
         train_dataset,
