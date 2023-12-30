@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('--loss_reduction', default='mean')
     parser.add_argument('--output_dir', default='outputs/models')
     parser.add_argument('--data_location', default='data/black_white_dataset')
-    parser.add_argument('--data_background_loc', type=int, default=3)
+    parser.add_argument('--data_label_loc', type=int, default=3)
     parser.add_argument('--data_set_loc', type=int, default=2)
 
     parser.add_argument('--reduce_lr', action='store_true')
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     train_dataset = ImageDataset(
         args.data_location,
-        path_background_loc=args.data_background_loc,
+        path_label_loc=args.data_label_loc,
         dataset_name='train',
         scale_images_to=args.image_scale,
         normalize=True,

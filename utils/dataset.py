@@ -12,7 +12,6 @@ class ImageDataset(Dataset):
     def __init__(
             self,
             data_master_dir,
-            path_background_loc=None,
             path_label_loc=None,
             set_loc=2,
             scale_images_to=None,
@@ -26,10 +25,8 @@ class ImageDataset(Dataset):
         to call the dataset and pull examples to form batches.
 
         :param str data_master_dir: str. Path to directory containing images, e.g. `data/black_white_dataset`
-        :param path_background_loc: int or None. Location in path denoting the background color. Relevant only to
-            train time, hence should be None for testing time.
-        :param path_label_loc: int or None. Location in path denoting the label location. Relevant only for testing
-            time, hence should be None for training time.
+        :param path_label_loc: int. Location in path denoting a property label location - either background color for
+            train time or label for test time.
         :param int set_loc: Location of set (train | test) indicator in path.
         :param int scale_images_to: Size target for images. Leave None for no scaling, but for batching purposes the
             images should be of equal sizes. EDA tells of square images so the resize is to size
@@ -45,12 +42,13 @@ class ImageDataset(Dataset):
         if dataset_name not in ['train', 'test']:
             raise ValueError(f"Incorrect dataset name: {dataset_name}")
 
+        property = [p.parts[path_label_loc] for p in images]
+        label_encoder = LabelEncoder(set(property))
+
         if dataset_name == 'train':
-            background_color = [p.parts[path_background_loc] for p in images]
-            label_encoder = LabelEncoder(['black', 'white'])
+            background_color = property
         else:
-            label = [p.parts[path_label_loc] for p in images]
-            label_encoder = LabelEncoder(set(label))
+            label = property
 
         images = [str(p) for p in images]
         df = pd.DataFrame(
@@ -104,9 +102,10 @@ class ImageDataset(Dataset):
 if __name__ == '__main__':
     image_loader = ImageDataset(
         '../data/black_white_dataset',
-        path_background_loc=4,
+        path_label_loc=4,
         dataset_name='train',
-        scale_images_to=500
+        scale_images_to=500,
+        set_loc=3
     )
 
     image, background_color = image_loader[0]
@@ -115,7 +114,8 @@ if __name__ == '__main__':
         '../data/categories_dataset',
         path_label_loc=4,
         dataset_name='test',
-        scale_images_to=500
+        scale_images_to=500,
+        set_loc=3
     )
 
     test_image, test_label = image_test_loader[0]

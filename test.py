@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     train_dataset = ImageDataset(
         'data/black_white_dataset',
-        path_background_loc=3,
+        path_label_loc=3,
         dataset_name='train',
         scale_images_to=512,
         normalize=True
