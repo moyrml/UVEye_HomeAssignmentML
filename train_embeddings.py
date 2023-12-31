@@ -38,7 +38,7 @@ def cluster_embeddings(algo_type, n_clusters, embeddings, class_size_prior=None)
     cluster.class_size_prior = None
     if class_size_prior is not None:
         frequency = pd.Series(cluster.labels_).value_counts(normalize=True, ascending=False)
-        cluster.class_size_prior = {i: class_size_prior[i] for i in frequency.index}
+        cluster.class_size_prior = {cls: class_size_prior[i] for i, cls in enumerate(frequency.index)}
 
     return cluster
 
