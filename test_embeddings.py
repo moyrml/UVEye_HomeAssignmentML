@@ -31,6 +31,11 @@ def test_embeddings(embeddings, labels, cluster_algo, dim_reduction_algo=None, m
             )
             fig.write_html(master_dir / 'latent_vectors' / set_type / '2d_pca_embeddings.html')
 
+            fig = plot_2d_embeddings_scatter(
+                embeddings, embedding_model['cluster'], label_col='label'
+            )
+            fig.write_html(master_dir / 'latent_vectors' / set_type / 'ground_truth_2d_pca_embeddings.html')
+
     return embeddings
 
 
@@ -48,6 +53,10 @@ if __name__ == '__main__':
     assert embedding_model_file.exists(), f'Cannot find embedding model at {embedding_model_file}'
     with open(embedding_model_file, 'rb') as f:
         embedding_model = pkl.load(f)
+
+    test_embeddings_data['labels'] = [
+        test_embeddings_data['label_encoder'].decode(l) for l in test_embeddings_data['labels']
+    ]
 
     embeddings = pd.DataFrame(test_embeddings_data['embeddings'])
     embeddings = test_embeddings(
