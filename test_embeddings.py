@@ -67,4 +67,7 @@ if __name__ == '__main__':
         master_dir=master_dir
     )
 
+    embeddings['image name'] = test_embeddings_data['image_names']
+    embeddings[['image name', 'label', 'cluster affiliation']].to_csv(master_dir / 'prediction.csv', index=False)
+
     print('Done')
