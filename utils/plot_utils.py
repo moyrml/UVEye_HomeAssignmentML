@@ -9,15 +9,15 @@ def plot_loss(epoch_losses, y_title='MSE Loss'):
     return fig
 
 
-def plot_2d_embeddings_scatter(df, cluster=None):
+def plot_2d_embeddings_scatter(df, cluster=None, label_col='label'):
     """
 
     :param cluster: None or an `sklearn.cluter` algorithm. In the latter case, the plot will contain the centroids
     :param df: pandas.DataFrame with columns [PC_1, PC_2, label]
     :return: plotly.graph_objs.Figure
     """
-
-    fig = px.scatter(df, x='PC_1', y='PC_2', color='label')
+    df[label_col] = df[label_col].astype(str)
+    fig = px.scatter(df, x='PC_1', y='PC_2', color=label_col)
     if cluster is not None:
         fig.add_trace(
             go.Scatter(
