@@ -12,8 +12,6 @@ class ImageDataset(Dataset):
     def __init__(
             self,
             data_master_dir,
-            path_label_loc=None,
-            set_loc=2,
             scale_images_to=None,
             dataset_name='train',
             normalize=False,
@@ -25,9 +23,6 @@ class ImageDataset(Dataset):
         to call the dataset and pull examples to form batches.
 
         :param str data_master_dir: str. Path to directory containing images, e.g. `data/black_white_dataset`
-        :param path_label_loc: int. Location in path denoting a property label location - either background color for
-            train time or label for test time.
-        :param int set_loc: Location of set (train | test) indicator in path.
         :param int scale_images_to: Size target for images. Leave None for no scaling, but for batching purposes the
             images should be of equal sizes. EDA tells of square images so the resize is to size
             (scale_images_to,scale_images_to).
@@ -35,14 +30,13 @@ class ImageDataset(Dataset):
         """
         images = list(Path(data_master_dir).rglob('*.png'))
         image_names = [p.stem for p in images]
-        image_set = [p.parts[set_loc] for p in images]
+        image_set = [p.parent.parent.stem for p in images]
         background_color = [np.nan] * len(images)
         label = [np.nan] * len(images)
 
-        if dataset_name not in ['train', 'test']:
-            raise ValueError(f"Incorrect dataset name: {dataset_name}")
+        assert dataset_name in ['train', 'test'], f"Incorrect dataset name: {dataset_name}"
 
-        property = [p.parts[path_label_loc] for p in images]
+        property = [p.parent.stem for p in images]
         label_encoder = LabelEncoder(set(property))
 
         if dataset_name == 'train':
@@ -64,7 +58,6 @@ class ImageDataset(Dataset):
         self.scale_images_to = scale_images_to
         self.label_encoder = label_encoder
         self.normalize = normalize
-        self.set_loc = set_loc
         self.return_filename = return_filename
 
     def __len__(self):
@@ -102,20 +95,16 @@ class ImageDataset(Dataset):
 if __name__ == '__main__':
     image_loader = ImageDataset(
         '../data/black_white_dataset',
-        path_label_loc=4,
         dataset_name='train',
         scale_images_to=500,
-        set_loc=3
     )
 
     image, background_color = image_loader[0]
 
     image_test_loader = ImageDataset(
         '../data/categories_dataset',
-        path_label_loc=4,
         dataset_name='test',
         scale_images_to=500,
-        set_loc=3
     )
 
     test_image, test_label = image_test_loader[0]
