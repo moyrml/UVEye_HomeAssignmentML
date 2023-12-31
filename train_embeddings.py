@@ -8,15 +8,24 @@ from utils.clustring_algo_mapping import get_clustering_algo_from_name
 from utils.plot_utils import plot_2d_embeddings_scatter
 
 
-def reduce_dim(embeddings, target_dim):
-    embeddings -= embeddings.mean(0)
-    embeddings /= embeddings.std(0)
+def reduce_dim(embeddings, target_dim=None, pca=None):
+    if pca is None:
+        norm_params = dict(mean=embeddings.mean(0), std=embeddings.std(0))
+        embeddings -= norm_params['mean']
+        embeddings /= norm_params['std']
 
-    pca = PCA(n_components=2)
-    embeddings = pca.fit_transform(embeddings)
+        pca = PCA(n_components=target_dim)
+        embeddings = pca.fit_transform(embeddings)
+        pca.norm_params = norm_params
+    else:
+        norm_params = pca.norm_params
+        embeddings -= norm_params['mean']
+        embeddings /= norm_params['std']
+        embeddings = pca.transform(embeddings)
+        target_dim = pca.n_components
     df = pd.DataFrame(embeddings, columns=[f'PC_{i+1}' for i in range(target_dim)])
 
-    return df
+    return df, pca
 
 
 def cluster_embeddings(algo_type, n_clusters, embeddings):
@@ -57,9 +66,10 @@ if __name__ == '__main__':
     with open(embeddings_file, 'rb') as f:
         contents = pkl.load(f)
 
+    pca = None
     df = pd.DataFrame(contents['embeddings'])
     if args.pca_dim != -1:
-        df = reduce_dim(contents['embeddings'], args.pca_dim)
+        df, pca = reduce_dim(contents['embeddings'], args.pca_dim)
 
     cluster = cluster_embeddings(args.clustering_algo, args.n_clusters, df)
     if args.pca_dim == 2:
@@ -68,4 +78,12 @@ if __name__ == '__main__':
         fig = plot_2d_embeddings_scatter(df, cluster)
         fig.write_html(master_dir / 'latent_vectors' / 'train' / '2d_pca_embeddings.html')
 
+    with open(master_dir / 'embedding_model.pkl', 'wb') as f:
+        pkl.dump(
+            dict(
+                reduce_dim=pca,
+                cluster=cluster
+            ),
+            f
+        )
     print('done')
