@@ -71,7 +71,6 @@ if __name__ == '__main__':
 
     dataset = ImageDataset(
         args.data_location,
-        path_label_loc=args.data_label_loc if args.data_label_loc != -1 else train_config['data_label_loc'],
         dataset_name=args.set_type,
         scale_images_to=train_config['image_scale'],
         normalize=True,
