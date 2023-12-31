@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('--bs', type=int, default=1)
     parser.add_argument('--gpu_num', type=int, default=0)
     parser.add_argument('--loss_reduction', default='mean')
-    parser.add_argument('--output_dir', default='outputs/models')
+    parser.add_argument('--output_dir', default='outputs/')
     parser.add_argument('--data_location', default='data/black_white_dataset')
     parser.add_argument('--data_label_loc', type=int, default=3)
     parser.add_argument('--data_set_loc', type=int, default=2)
