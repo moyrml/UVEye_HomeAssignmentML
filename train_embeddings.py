@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 
 from utils.clustring_algo_mapping import get_clustering_algo_from_name
 from utils.plot_utils import plot_2d_embeddings_scatter
-
+from utils.reproducibility import set_random_seeds
 
 def reduce_dim(embeddings, target_dim=None, pca=None):
     if pca is None:
@@ -37,6 +37,8 @@ def cluster_embeddings(algo_type, n_clusters, embeddings):
 
 
 if __name__ == '__main__':
+    set_random_seeds()
+
     parser = ArgumentParser()
     parser.add_argument('--master_dir', default='outputs/December_30_2023_10_59AM')
     parser.add_argument(

@@ -13,7 +13,7 @@ from utils.dataset import ImageDataset
 from utils.time_as_string import get_current_time_as_string
 from utils.plot_utils import plot_loss
 from utils.activation_func_mapping import get_activation_func_from_name
-
+from utils.reproducibility import set_random_seeds
 
 def train_ae_one_epoch(model, device, dataloader, optimizer, loss_func):
     model.train()
@@ -52,6 +52,8 @@ def train_ae(model, device, train_dataloader, epochs, optimizer, loss_func, outp
 
 
 if __name__ == '__main__':
+    set_random_seeds()
+
     parser = ArgumentParser()
     parser.add_argument('--image_scale', type=int, default=512)
     parser.add_argument('--num_workers', type=int, default=4)
