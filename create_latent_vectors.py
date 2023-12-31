@@ -22,7 +22,7 @@ def create_latent_vectors(ae_model, dataloader, device, output_dir):
         for batch_i, (images, label, image_name) in enumerate(dataloader):
             batch_embeddings = ae_model.encoder(images.to(device))
 
-            embeddings.append(batch_embeddings)
+            embeddings.append(batch_embeddings.cpu())
             image_names.extend(image_name)
             labels.extend([l.item() for l in label])
 
