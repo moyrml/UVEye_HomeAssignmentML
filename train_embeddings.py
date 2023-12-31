@@ -3,6 +3,7 @@ import pickle as pkl
 from pathlib import Path
 from sklearn.decomposition import PCA
 from argparse import ArgumentParser
+import json
 
 from utils.clustring_algo_mapping import get_clustering_algo_from_name
 from utils.plot_utils import plot_2d_embeddings_scatter
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     set_random_seeds()
 
     parser = ArgumentParser()
-    parser.add_argument('--master_dir', default='outputs/December_30_2023_10_59AM')
+    parser.add_argument('--model_path', default=None)
     parser.add_argument(
         '--pca_dim',
         type=int,
@@ -71,11 +72,18 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    master_dir = Path(args.master_dir)
+    if args.model_path is None:
+        last_run_file = Path('train_ae_last_output_folder.json')
+        assert last_run_file.exists(), f'No model_path specified and cannot find train_ae_last_output_folder.json'
+
+        with open(last_run_file, 'r') as f:
+            model_path = Path(json.load(f)['output_dir'])
+    else:
+        model_path = Path(args.model_path)
 
     embeddings_file = args.embeddings_file
     if args.embeddings_file is None:
-        embeddings_file = master_dir / 'latent_vectors' / args.set_type / 'names_labels_embeddings.pkl'
+        embeddings_file = model_path / 'latent_vectors' / args.set_type / 'names_labels_embeddings.pkl'
     assert embeddings_file.exists(), f'Cannot find latent representations of images. Location given: {embeddings_file}'
 
     with open(embeddings_file, 'rb') as f:
@@ -91,9 +99,9 @@ if __name__ == '__main__':
         df['label'] = contents['labels']
         df['label'] = df['label'].astype(str)
         fig = plot_2d_embeddings_scatter(df, cluster)
-        fig.write_html(master_dir / 'latent_vectors' / 'train' / '2d_pca_embeddings.html')
+        fig.write_html(model_path / 'latent_vectors' / 'train' / '2d_pca_embeddings.html')
 
-    with open(master_dir / 'embedding_model.pkl', 'wb') as f:
+    with open(model_path / 'embedding_model.pkl', 'wb') as f:
         pkl.dump(
             dict(
                 reduce_dim=pca,

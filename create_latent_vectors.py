@@ -42,7 +42,7 @@ def create_latent_vectors(ae_model, dataloader, device, output_dir):
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument('--model_path', default='outputs/December_30_2023_10_59AM/')
+    parser.add_argument('--model_path', default=None)
     parser.add_argument('--data_location', default='data/black_white_dataset')
     # Im doing this override because im training on colab and sometimes testing on my pc
     parser.add_argument('--data_label_loc', type=int, default=-1)
@@ -51,7 +51,15 @@ if __name__ == '__main__':
     parser.add_argument('--set_type', default='train')
     args = parser.parse_args()
 
-    model_path = Path(args.model_path)
+    if args.model_path is None:
+        last_run_file = Path('train_ae_last_output_folder.json')
+        assert last_run_file.exists(), f'No model_path specified and cannot find train_ae_last_output_folder.json'
+
+        with open(last_run_file, 'r') as f:
+            model_path = Path(json.load(f)['output_dir'])
+    else:
+        model_path = Path(args.model_path)
+
     output_dir = model_path / 'latent_vectors' / args.set_type
     output_dir.mkdir(exist_ok=True, parents=True)
     device = f'cuda:0' if torch.cuda.is_available() else 'cpu'

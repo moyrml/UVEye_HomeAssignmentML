@@ -86,6 +86,9 @@ if __name__ == '__main__':
     with open(output_dir / 'run_config.json', 'w') as f:
         json.dump(args.__dict__, f, indent=True)
 
+    with open('train_ae_last_output_folder.json', 'w') as f:
+        json.dump(dict(output_dir=str(output_dir)), f)
+
     device = f'cuda:{args.gpu_num}' if torch.cuda.is_available() else 'cpu'
     print(f'Using device {device}')
 
