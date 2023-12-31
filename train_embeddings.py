@@ -29,10 +29,15 @@ def reduce_dim(embeddings, target_dim=None, pca=None):
     return df, pca
 
 
-def cluster_embeddings(algo_type, n_clusters, embeddings):
+def cluster_embeddings(algo_type, n_clusters, embeddings, class_size_prior=None):
     clusteringAlgo = get_clustering_algo_from_name(algo_type)
     cluster = clusteringAlgo(n_clusters=n_clusters, n_init='auto')
     cluster.fit(embeddings)
+
+    cluster.class_size_prior = None
+    if class_size_prior is not None:
+        frequency = pd.Series(cluster.labels_).value_counts(normalize=True, ascending=False)
+        cluster.class_size_prior = {i: class_size_prior[i] for i in frequency.index}
 
     return cluster
 
@@ -57,6 +62,13 @@ if __name__ == '__main__':
     parser.add_argument('--clustering_algo', default='KMeans')
     parser.add_argument('--n_clusters', type=int, default=4)
     parser.add_argument('--set_type', default='train')
+    parser.add_argument(
+        '--class_size_prior',
+        nargs='+',
+        default=['screw', 'pill', 'metal_nut', 'capsule'],
+        help='Give clusters names according to the size of the cluster, biggest to smallest. '
+             'This prior derives straight from the instructions.'
+    )
     args = parser.parse_args()
 
     master_dir = Path(args.master_dir)
@@ -74,7 +86,7 @@ if __name__ == '__main__':
     if args.pca_dim != -1:
         df, pca = reduce_dim(contents['embeddings'], args.pca_dim)
 
-    cluster = cluster_embeddings(args.clustering_algo, args.n_clusters, df)
+    cluster = cluster_embeddings(args.clustering_algo, args.n_clusters, df, args.class_size_prior)
     if args.pca_dim == 2:
         df['label'] = contents['labels']
         df['label'] = df['label'].astype(str)

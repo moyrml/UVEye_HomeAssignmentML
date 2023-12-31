@@ -19,6 +19,8 @@ def test_embeddings(embeddings, labels, cluster_algo, dim_reduction_algo=None, m
 
     cluster_affiliation = cluster_algo.predict(embeddings)
     embeddings['cluster affiliation'] = cluster_affiliation
+    if hasattr(cluster_algo, 'class_size_prior') and cluster_algo.class_size_prior is not None:
+        embeddings['cluster affiliation'] = embeddings['cluster affiliation'].replace(cluster_algo.class_size_prior)
 
     if draw_output:
         embeddings['label'] = labels
