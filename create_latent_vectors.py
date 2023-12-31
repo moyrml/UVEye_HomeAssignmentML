@@ -45,7 +45,6 @@ if __name__ == '__main__':
     parser.add_argument('--model_path', default=None)
     parser.add_argument('--data_location', default='data/black_white_dataset')
     # Im doing this override because im training on colab and sometimes testing on my pc
-    parser.add_argument('--data_label_loc', type=int, default=-1)
     parser.add_argument('--num_workers', type=int, default=-1)
     parser.add_argument('--bs', type=int, default=-1)
     parser.add_argument('--set_type', default='train')

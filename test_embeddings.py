@@ -2,7 +2,7 @@ import pandas as pd
 import pickle as pkl
 import json
 from pathlib import Path
-
+from argparse import ArgumentParser
 from utils.plot_utils import plot_2d_embeddings_scatter
 from train_embeddings import reduce_dim
 

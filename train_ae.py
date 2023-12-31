@@ -15,6 +15,7 @@ from utils.plot_utils import plot_loss
 from utils.activation_func_mapping import get_activation_func_from_name
 from utils.reproducibility import set_random_seeds
 
+
 def train_ae_one_epoch(model, device, dataloader, optimizer, loss_func):
     model.train()
     epoch_loss = 0
@@ -94,11 +95,9 @@ if __name__ == '__main__':
 
     train_dataset = ImageDataset(
         args.data_location,
-        path_label_loc=args.data_label_loc,
         dataset_name='train',
         scale_images_to=args.image_scale,
         normalize=True,
-        set_loc=args.data_set_loc
     )
     train_dataset.describe()
 
