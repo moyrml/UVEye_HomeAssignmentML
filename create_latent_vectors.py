@@ -60,7 +60,7 @@ if __name__ == '__main__':
     with open(train_config_path) as f:
         train_config = json.load(f)
     with open(output_dir / 'run_config.json', 'w') as f:
-        json.dump(args.__dict__, f)
+        json.dump(args.__dict__, f, indent=True)
 
     dataset = ImageDataset(
         args.data_location,
