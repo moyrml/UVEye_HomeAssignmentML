@@ -40,17 +40,18 @@ if __name__ == '__main__':
         '--embeddings_file',
         default=None,
         help='path to embeddings. Do not specify if you want to use the default of '
-             'model_dir/latent_vectors/names_labels_embeddings.pkl'
+             'model_dir/latent_vectors/$set_type/names_labels_embeddings.pkl'
     )
     parser.add_argument('--clustering_algo', default='KMeans')
     parser.add_argument('--n_clusters', type=int, default=4)
+    parser.add_argument('--set_type', default='train')
     args = parser.parse_args()
 
     master_dir = Path(args.master_dir)
 
     embeddings_file = args.embeddings_file
     if args.embeddings_file is None:
-        embeddings_file = master_dir / 'latent_vectors' / 'names_labels_embeddings.pkl'
+        embeddings_file = master_dir / 'latent_vectors' / args.set_type / 'names_labels_embeddings.pkl'
     assert embeddings_file.exists(), f'Cannot find latent representations of images. Location given: {embeddings_file}'
 
     with open(embeddings_file, 'rb') as f:
@@ -65,6 +66,6 @@ if __name__ == '__main__':
         df['label'] = contents['labels']
         df['label'] = df['label'].astype(str)
         fig = plot_2d_embeddings_scatter(df, cluster)
-        fig.write_html(master_dir / 'latent_vectors' / '2d_pca_embeddings.html')
+        fig.write_html(master_dir / 'latent_vectors' / 'train' / '2d_pca_embeddings.html')
 
     print('done')

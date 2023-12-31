@@ -52,7 +52,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     model_path = Path(args.model_path)
-    output_dir = model_path / 'latent_vectors'
+    output_dir = model_path / 'latent_vectors' / args.set_type
     output_dir.mkdir(exist_ok=True, parents=True)
     device = f'cuda:0' if torch.cuda.is_available() else 'cpu'
 
