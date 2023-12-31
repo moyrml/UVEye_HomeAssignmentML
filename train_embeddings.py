@@ -8,6 +8,7 @@ from utils.clustring_algo_mapping import get_clustering_algo_from_name
 from utils.plot_utils import plot_2d_embeddings_scatter
 from utils.reproducibility import set_random_seeds
 
+
 def reduce_dim(embeddings, target_dim=None, pca=None):
     if pca is None:
         norm_params = dict(mean=embeddings.mean(0), std=embeddings.std(0))
