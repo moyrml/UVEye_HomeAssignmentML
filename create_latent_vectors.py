@@ -58,6 +58,7 @@ if __name__ == '__main__':
             model_path = Path(json.load(f)['output_dir'])
     else:
         model_path = Path(args.model_path)
+    print(f'Using model directory {model_path}')
 
     output_dir = model_path / 'latent_vectors' / args.set_type
     output_dir.mkdir(exist_ok=True, parents=True)

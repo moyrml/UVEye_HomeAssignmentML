@@ -62,6 +62,7 @@ if __name__ == '__main__':
         model_path = Path(args.model_path)
 
     model_path = Path(model_path)
+    print(f'Using model directory {model_path}')
 
     if args.embeddings_file is None:
         test_embeddings_data_file = model_path / 'latent_vectors' / args.set_type / 'names_labels_embeddings.pkl'

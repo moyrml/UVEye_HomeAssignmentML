@@ -80,6 +80,7 @@ if __name__ == '__main__':
             model_path = Path(json.load(f)['output_dir'])
     else:
         model_path = Path(args.model_path)
+    print(f'Using model directory {model_path}')
 
     embeddings_file = args.embeddings_file
     if args.embeddings_file is None:
