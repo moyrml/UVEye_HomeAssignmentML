@@ -74,7 +74,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--ae_depth', type=int, default=6)
     parser.add_argument('--ae_expand_factor', type=int, default=2)
-    parser.add_argument('--ae_latent_dim', type=int, default=16)
+    parser.add_argument('--ae_latent_dim', type=int, default=8)
     parser.add_argument('--ae_activation_func', type=str, default='GELU')
     args = parser.parse_args()
 
