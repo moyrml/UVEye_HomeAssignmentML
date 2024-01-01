@@ -67,8 +67,6 @@ if __name__ == '__main__':
     parser.add_argument('--loss_reduction', default='mean')
     parser.add_argument('--output_dir', default='outputs/')
     parser.add_argument('--data_location', default='data/black_white_dataset')
-    parser.add_argument('--data_label_loc', type=int, default=3)
-    parser.add_argument('--data_set_loc', type=int, default=2)
 
     parser.add_argument('--reduce_lr', action='store_true')
     parser.add_argument('--reduce_lr_patience', type=int, default=3)
