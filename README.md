@@ -54,7 +54,7 @@ To install dependencies: \
 1. **Produce embeddings for the testing set** \
   `python create_latent_vectors.py --data_location /path/to/data/categories_dataset/ --set_type=test`
 1. **Test on the test embeddings** \
-  `python UVEye_HomeAssignmentML/test_embeddings.py` \
+  `python UVEye_HomeAssignmentML/test_embeddings.py` 
 
 ## Results
 Using the default hyperparameters the AutoEncoder model achieves the following loss curve (MSE loss):
