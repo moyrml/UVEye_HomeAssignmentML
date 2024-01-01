@@ -56,4 +56,31 @@ To install dependencies: \
 1. **Test on the test embeddings** \
   `python UVEye_HomeAssignmentML/test_embeddings.py` \
 
+## Results
+Using the default hyperparameters the AutoEncoder model achieves the following loss curve (MSE loss):
 
+![AE training loss](readme_assets/ae_loss.png) \
+Note that it seems the loss has not converged. Tests in which the loss fully converged has produced "better"
+auto-encoder, but poorer embeddings. Thous could be the result of over-fit: learning to distinguish samples
+by minute details, rather than parts relevant to the task at hand.
+
+Representative reconstructions of the test set:
+
+![Samples of reconstructions](readme_assets/ae_reconstruction.png)
+
+This encoder produces the following *testing set* embeddings (PCA reduced to 2 dimensions, 
+KMeans cluster centroids found on the *training set* embeddings are overlaid and denoted by "X"):
+
+![Test set embeddings overlaid with cluster centroids](readme_assets/test_pca.png)
+
+Note that we name the clusters according to the class size prior given in the instruction. Hence, the clusters 
+in the above plot have names rater than numerical ids. \
+Therefore, were we obtain a confusion matrix: 
+```
+cluster affiliation  capsule  metal_nut  pill  screw
+label                                               
+capsule                142.0        0.0   0.0    0.0
+metal_nut                0.0       92.0   0.0    0.0
+pill                     0.0        0.0  93.0    0.0
+screw                    0.0        0.0   0.0  111.0
+```
