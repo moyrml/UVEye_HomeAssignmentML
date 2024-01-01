@@ -16,7 +16,8 @@ def plot_2d_embeddings_scatter(df, cluster=None, label_col='label'):
     :param df: pandas.DataFrame with columns [PC_1, PC_2, label]
     :return: plotly.graph_objs.Figure
     """
-    df[label_col] = df[label_col].astype(str)
+    if label_col is not None:
+        df[label_col] = df[label_col].astype(str)
     fig = px.scatter(df, x='PC_1', y='PC_2', color=label_col)
     if cluster is not None:
         fig.add_trace(
