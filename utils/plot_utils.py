@@ -12,6 +12,8 @@ def plot_loss(epoch_losses, y_title='MSE Loss'):
 def plot_2d_embeddings_scatter(df, cluster=None, label_col='label'):
     """
 
+    :param label_col: str or None. Column to regard as label - this will be the color of the datapoints.
+        Leave None for no color coding.
     :param cluster: None or an `sklearn.cluter` algorithm. In the latter case, the plot will contain the centroids
     :param df: pandas.DataFrame with columns [PC_1, PC_2, label]
     :return: plotly.graph_objs.Figure
