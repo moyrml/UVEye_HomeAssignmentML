@@ -4,12 +4,14 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from pathlib import Path
+from argparse import ArgumentParser
+import json
 
 from utils.model import AE
 from utils.dataset import ImageDataset
+from utils.activation_func_mapping import get_activation_func_from_name
 
-
-def test_ae(model_path, test_dataloader, device, output_dir):
+def test_ae(model_path, test_dataloader, device, output_dir, train_config):
     """
     Visually test AE quality. This is an exhaustive process of image creation. We don't need to create ALL images since
     There is high dependency them.
@@ -21,11 +23,11 @@ def test_ae(model_path, test_dataloader, device, output_dir):
     :return:
     """
     model = AE(dict(
-        depth=6,
-        expand_factor=2,
-        latent_dim=32,
-        activation_func=nn.GELU,
-        input_dim=512
+        depth=train_config['ae_depth'],
+        expand_factor=train_config['ae_expand_factor'],
+        latent_dim=train_config['ae_latent_dim'],
+        activation_func=get_activation_func_from_name(train_config['ae_activation_func']),
+        input_dim=train_config['image_scale']
     ))
     model.load_state_dict(torch.load(model_path, map_location=device))
 
@@ -43,16 +45,33 @@ def test_ae(model_path, test_dataloader, device, output_dir):
 
 
 if __name__ == '__main__':
-    model_path = '/home/moshe/UVEye_HomeAssignmentML/outputs/December_29_2023_09_59PM/ae_model.pth'
-    output_dir = '/home/moshe/UVEye_HomeAssignmentML/outputs/December_29_2023_09_59PM/ae_testing'
+    parser = ArgumentParser()
+    parser.add_argument('--model_path', default=None)
+    args = parser.parse_args()
+
+    if args.model_path is None:
+        last_run_file = Path('train_ae_last_output_folder.json')
+        assert last_run_file.exists(), f'No model_path specified and cannot find train_ae_last_output_folder.json'
+
+        with open(last_run_file, 'r') as f:
+            model_path = Path(json.load(f)['output_dir'])
+    else:
+        model_path = Path(args.model_path)
+    print(f'Using model directory {model_path}')
+
+    model_path = Path(args.model_path) / 'ae_model.pth'
+    output_dir = model_path.parent / 'ae_testing'
     output_dir = Path(output_dir)
     output_dir.mkdir(exist_ok=True, parents=True)
 
+    train_config_path = model_path.parent / 'run_config.json'
+    with open(train_config_path) as f:
+        train_config = json.load(f)
+
     train_dataset = ImageDataset(
-        'data/black_white_dataset',
-        path_label_loc=3,
-        dataset_name='train',
-        scale_images_to=512,
+        'data/categories_dataset',
+        dataset_name='test',
+        scale_images_to=train_config['image_scale'],
         normalize=True
     )
 
@@ -64,5 +83,4 @@ if __name__ == '__main__':
     )
 
     device = f'cuda:0' if torch.cuda.is_available() else 'cpu'
-    test_ae(model_path, train_dataloader, device, output_dir)
-
+    test_ae(model_path, train_dataloader, device, output_dir, train_config)
