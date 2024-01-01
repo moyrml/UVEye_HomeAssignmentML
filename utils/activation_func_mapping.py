@@ -6,7 +6,8 @@ def get_activation_func_from_name(func_name):
         ReLU=nn.ReLU,
         PReLU=nn.PReLU,
         GELU=nn.GELU,
-        GLU=nn.GLU
+        GLU=nn.GLU,
+        LeakyReLU=nn.LeakyReLU
     )
 
     return activation_functions[func_name]
