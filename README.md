@@ -7,9 +7,20 @@ the nearest cluster centroid. \
 Lastly, we use the class size prior given in the instructions to name each centroid with a phisically relevant name - 
 Screw, Pill, ... \
 \
-![](readme_assets/pipeline.svg)
+![Pipeline overview](readme_assets/pipeline.svg)
 
 ## Installation
+This code was developed with:
+- **Python 3.10** - Other python versions may not be compatible.
+- **Linux Kubuntu 22.04** - Pythons cross-platform capabilities means the code *should* work with other
+  operating systems, but that wasn't tested.
+
+Download the code: \
+`git clone git@github.com:moyrml/UVEye_HomeAssignmentML.git` \
+Before proceeding, it is best to create a virtual environment. \
+To install dependencies: \
+`pip install -r requirements.txt`
+
 ## Pre-requisites
 - **data** \
   The data structure expected should be:
@@ -23,6 +34,10 @@ Screw, Pill, ... \
   ```
   Where inside `black_white_dataset` and `categories_dataset` the directory structure is the same as in the assignment 
   zip file.
+- **GPU**: A nice addition that will reduce training run-tim by ~3x, but not strictly-necessary as the run-times are
+  already low.
+
+
 ## Training
 1. **Train AutoEncoder** \
   `python train_ae.py --data_location /path/to/data/black_white_dataset --reduce_lr` \
@@ -38,3 +53,5 @@ Screw, Pill, ... \
   `python create_latent_vectors.py --data_location /path/to/data/categories_dataset/ --set_type=test`
 1. **Test on the test embeddings** \
   `python UVEye_HomeAssignmentML/test_embeddings.py` \
+
+
