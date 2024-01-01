@@ -93,4 +93,5 @@ if __name__ == '__main__':
     embeddings['image name'] = test_embeddings_data['image_names']
     embeddings[['image name', 'label', 'cluster affiliation']].to_csv(model_path / 'prediction.csv', index=False)
 
-    print('Done')
+    cm = embeddings[['label', 'cluster affiliation']].groupby(['label', 'cluster affiliation']).size().unstack()
+    print(cm.to_string())
