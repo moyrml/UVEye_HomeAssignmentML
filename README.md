@@ -9,17 +9,6 @@ Screw, Pill, ... \
 \
 ![Pipeline overview](readme_assets/pipeline.svg)
 
-## Installation
-This code was developed with:
-- **Python 3.10** - Other python versions may not be compatible.
-- **Linux Kubuntu 22.04** - Pythons cross-platform capabilities means the code *should* work with other
-  operating systems, but that wasn't tested.
-
-Download the code: \
-`git clone git@github.com:moyrml/UVEye_HomeAssignmentML.git` \
-Before proceeding, it is best to create a virtual environment. \
-To install dependencies: \
-`pip install -r requirements.txt`
 
 ## Pre-requisites
 - **data** \
@@ -34,8 +23,21 @@ To install dependencies: \
   ```
   Where inside `black_white_dataset` and `categories_dataset` the directory structure is the same as in the assignment 
   zip file.
-- **GPU**: A nice addition that will reduce training run-tim by ~3x, but not strictly-necessary as the run-times are
+- **GPU**: A nice addition that will reduce training run-time by ~3x, but not strictly-necessary as the run-times are
   already low.
+
+
+## Installation
+This code was developed with:
+- **Python 3.10** - Other python versions may not be compatible.
+- **Linux Kubuntu 22.04** - Pythons cross-platform capabilities means the code *should* work with other
+  operating systems, but that wasn't tested.
+
+Download the code: \
+`git clone git@github.com:moyrml/UVEye_HomeAssignmentML.git` \
+Before proceeding, it is best to create a virtual environment. \
+To install dependencies: \
+`pip install -r requirements.txt`
 
 
 ## Training
